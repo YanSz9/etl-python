@@ -1,6 +1,10 @@
 import requests
 import psycopg2 as db
 from psycopg2 import sql
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 def get_database_connection(conn_params):
     return db.connect(**conn_params)
@@ -16,7 +20,7 @@ def execute_query(cursor, query, data):
         print(f"Error executing query: {e}")
         raise
 
-def fetch_data(url, page_size):
+def extract_data(url, page_size):
     page_number = 1
     while True:
         full_url = f"{url}?PageNumber={page_number}&PageSize={page_size}"
@@ -73,11 +77,11 @@ def load_data(transformed_data, conn_params, table_name, columns, conflict_colum
         close_database_connection(conn)
 
 conn_params = {
-    'dbname': 'mydb',
-    'user': 'myuser',
-    'password': 'mypassword',
-    'host': 'localhost',
-    'port': '5432'
+    'dbname': os.getenv('DB_NAME'),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'host': os.getenv('DB_HOST'),
+    'port': os.getenv("DB_PORT")
 }
 
 product_url = "https://demodata.grapecity.com/adventureworks/api/v1/products"
@@ -138,12 +142,12 @@ sales_columns = [
 ]
 
 try:
-    for products in fetch_data(product_url, page_size):
+    for products in extract_data(product_url, page_size):
         transformed_products = transform_data(products, product_mapping)
         if transformed_products:
             load_data(transformed_products, conn_params, 'd_product', product_columns, 'product_id')
     
-    for sales in fetch_data(sales_url, page_size):
+    for sales in extract_data(sales_url, page_size):
         transformed_sales = transform_data(sales, sales_mapping)
         if transformed_sales:
             load_data(transformed_sales, conn_params, 'f_sales', sales_columns, 'sales_order_id')
