@@ -37,3 +37,18 @@ CREATE TABLE f_sales (
     comment TEXT,
     modified_date TIMESTAMP
 );
+
+CREATE TABLE d_sales_order_details (
+    sales_order_id INT,
+    sales_order_detail_id INT PRIMARY KEY,
+    carrier_tracking_number VARCHAR(50),
+    order_quantity INT,
+    product_id INT,
+    product_name VARCHAR(255),
+    special_offer_id INT,
+    unit_price DECIMAL(18, 2),
+    unit_price_discount DECIMAL(18, 2),
+    line_total DECIMAL(18, 2),
+    modified_date TIMESTAMP
+);
+

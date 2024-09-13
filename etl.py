@@ -56,7 +56,7 @@ def load_data(transformed_data, conn_params, table_name, columns, conflict_colum
     
     columns_str = ', '.join(columns)
     values_str = ', '.join([f"%s" for _ in columns])
-    update_str = ', '.join([f"{col} = EXCLUDED.{col}" for col in columns])
+    update_str = ', '.join([f"{col} = EXCLUDED.{col}" for col in columns if col != conflict_column])
     
     query = sql.SQL(f'''
         INSERT INTO {table_name} ({columns_str})
@@ -81,11 +81,12 @@ conn_params = {
     'user': os.getenv('DB_USER'),
     'password': os.getenv('DB_PASSWORD'),
     'host': os.getenv('DB_HOST'),
-    'port': os.getenv("DB_PORT")
+    'port': os.getenv('DB_PORT')
 }
 
 product_url = "https://demodata.grapecity.com/adventureworks/api/v1/products"
 sales_url = "https://demodata.grapecity.com/adventureworks/api/v1/salesOrders"
+sales_order_details_url = "https://demodata.grapecity.com/adventureworks/api/v1/salesOrderDetails"
 page_size = 500
 
 product_mapping = {
@@ -128,6 +129,20 @@ sales_mapping = {
     'ModifiedDate': 'modifiedDate'
 }
 
+sales_order_details_mapping = {
+    'SalesOrderID': 'salesOrderId',
+    'SalesOrderDetailID': 'salesOrderDetailId',
+    'CarrierTrackingNumber': 'carrierTrackingNumber',
+    'OrderQuantity': 'orderQuantity',
+    'ProductID': 'productId',
+    'ProductName': 'productName',
+    'SpecialOfferID': 'specialOfferId',
+    'UnitPrice': 'unitPrice',
+    'UnitPriceDiscount': 'unitPriceDiscount',
+    'LineTotal': 'lineTotal',
+    'ModifiedDate': 'modifiedDate'
+}
+
 product_columns = [
     'product_id', 'product_name', 'product_category', 'product_description', 'list_price',
     'standard_cost', 'color', 'size', 'weight'
@@ -141,6 +156,12 @@ sales_columns = [
     'sub_total', 'tax_amount', 'freight', 'total_due', 'comment', 'modified_date'
 ]
 
+sales_order_details_columns = [
+    'sales_order_id', 'sales_order_detail_id', 'carrier_tracking_number', 'order_quantity',
+    'product_id', 'product_name', 'special_offer_id', 'unit_price', 'unit_price_discount',
+    'line_total', 'modified_date'
+]
+
 try:
     for products in extract_data(product_url, page_size):
         transformed_products = transform_data(products, product_mapping)
@@ -151,5 +172,10 @@ try:
         transformed_sales = transform_data(sales, sales_mapping)
         if transformed_sales:
             load_data(transformed_sales, conn_params, 'f_sales', sales_columns, 'sales_order_id')
+    
+    for sales_order_details in extract_data(sales_order_details_url, page_size):
+        transformed_sales_order_details = transform_data(sales_order_details, sales_order_details_mapping)
+        if transformed_sales_order_details:
+            load_data(transformed_sales_order_details, conn_params, 'd_sales_order_details', sales_order_details_columns, 'sales_order_detail_id')
 except Exception as e:
     print(f"An error occurred: {e}")
