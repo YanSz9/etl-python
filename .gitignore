@@ -1,0 +1,10 @@
+# Ignorar arquivos .env
+.env
+
+# Ignorar arquivos de cache e log
+*.pyc
+__pycache__/
+*.log
+
+# Ignorar o diretório de ambientes virtuais
+venv/
