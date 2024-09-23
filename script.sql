@@ -1,3 +1,5 @@
+-- SCRIPT DE CRIAÇÃO DAS TABELAS 
+
 CREATE TABLE d_product (
     product_id INT PRIMARY KEY,
     product_name VARCHAR(255),
@@ -56,3 +58,147 @@ CREATE TABLE d_calendario (
     semana_ano INT,
     fim_semana BOOLEAN
 );
+
+--SELECTS DAS TABELAS
+
+-- Vendas por produto
+SELECT
+    p.product_name AS "Product",
+    COUNT(sod.sales_order_id) AS "Sales Quantity",
+    SUM(sod.line_total) AS "Revenue Generate"
+FROM
+    d_product p
+        JOIN
+    d_sales_order_details sod ON p.product_id = sod.product_id
+        JOIN
+    f_sales s ON sod.sales_order_id = s.sales_order_id
+GROUP BY
+    p.product_name
+ORDER BY
+    "Revenue Generate" DESC;
+
+
+-- Vendas por data
+SELECT
+    s.order_date AS "Date",
+    COUNT(s.sales_order_id) AS "Sales Number",
+    SUM(s.sub_total) AS "Total Sold"
+FROM
+    f_sales s
+GROUP BY
+    s.order_date
+ORDER BY
+    s.order_date DESC;
+
+
+-- Vendas por cliente
+SELECT
+    s.customer_id AS "Client ID",
+    COUNT(s.sales_order_id) AS "Sales Number",
+    SUM(s.total_due) AS "Total Spent"
+FROM
+    f_sales s
+GROUP BY
+    s.customer_id
+ORDER BY
+    "Total Spent" DESC;
+
+-- Detalhes do Pedido 
+SELECT
+    s.sales_order_number AS "Order Number",
+    p.product_name AS "Product",
+    sod.order_quantity AS "Quantity",
+    sod.unit_price AS "Unit price",
+    sod.unit_price_discount AS "Discount",
+    sod.line_total AS "Total Line"
+FROM
+    f_sales s
+        JOIN
+    d_sales_order_details sod ON s.sales_order_id = sod.sales_order_id
+        JOIN
+    d_product p ON sod.product_id = p.product_id
+WHERE
+    s.sales_order_number = 'SO43659';
+
+
+-- Vendas por categoria de produto 
+SELECT
+    p.product_category AS "Category",
+    COUNT(sod.sales_order_id) AS "Sales Number",
+    SUM(sod.line_total) AS "Revenue Generated"
+FROM
+    d_product p
+        JOIN
+    d_sales_order_details sod ON p.product_id = sod.product_id
+        JOIN
+    f_sales s ON sod.sales_order_id = s.sales_order_id
+GROUP BY
+    p.product_category
+ORDER BY
+    "Revenue Generated" DESC;
+
+-- Produtos mais vendidos
+SELECT
+    p.product_name AS "Product",
+    SUM(sod.order_quantity) AS "Quantity Sold"
+FROM
+    d_product p
+        JOIN
+    d_sales_order_details sod ON p.product_id = sod.product_id
+GROUP BY
+    p.product_name
+ORDER BY
+    "Quantity Sold" DESC;
+
+
+-- Vendas Online x Offline
+SELECT
+    CASE
+        WHEN s.is_ordered_online THEN 'Online'
+        ELSE 'Offline'
+        END AS "Sales Type",
+    COUNT(s.sales_order_id) AS "Sales Order",
+    SUM(s.total_due) AS "Total Sales"
+FROM
+    f_sales s
+GROUP BY
+    "Sales Type";
+
+
+-- Frete médio por entrega
+SELECT
+    s.ship_method AS "Delivery Method",
+    AVG(s.freight) AS "Medium Freight",
+    SUM(s.freight) AS "Total Freight"
+FROM
+    f_sales s
+GROUP BY
+    s.ship_method
+ORDER BY
+    "Medium Freight" DESC;
+
+
+-- Vendas por vendedor 
+SELECT
+    s.sales_person_id AS "Seller ID",
+    COUNT(s.sales_order_id) AS "Sales Number",
+    SUM(s.total_due) AS "Total Sales"
+FROM
+    f_sales s
+GROUP BY
+    s.sales_person_id
+ORDER BY
+    "Total Sales" DESC;
+
+
+-- Vendas por território
+SELECT
+    s.territory AS "Territory",
+    COUNT(s.sales_order_id) AS "Sales Number",
+    SUM(s.total_due) AS "Total Sales"
+FROM
+    f_sales s
+GROUP BY
+    s.territory
+ORDER BY
+    "Total Sales" DESC;
