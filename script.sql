@@ -49,8 +49,15 @@ CREATE TABLE d_sales_order_details (
     unit_price DECIMAL(18, 2),
     unit_price_discount DECIMAL(18, 2),
     line_total DECIMAL(18, 2),
-    modified_date TIMESTAMP
+    modified_date TIMESTAMP,
+    CONSTRAINT fk_product FOREIGN KEY (product_id)
+        REFERENCES d_product(product_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_sales_order FOREIGN KEY (sales_order_id)
+        REFERENCES f_sales(sales_order_id)
+        ON DELETE CASCADE
 );
+
 
 CREATE TABLE d_calendario (
     data DATE PRIMARY KEY,
