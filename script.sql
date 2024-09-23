@@ -52,3 +52,15 @@ CREATE TABLE d_sales_order_details (
     modified_date TIMESTAMP
 );
 
+CREATE TABLE d_calendario (
+    data DATE PRIMARY KEY,
+    ano INT,
+    mes INT,
+    dia INT,
+    trimestre INT,
+    nome_mes VARCHAR(20),
+    nome_dia_semana VARCHAR(20),
+    dia_semana INT,
+    semana_ano INT,
+    fim_semana BOOLEAN
+);
