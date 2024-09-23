@@ -12,50 +12,35 @@ CREATE TABLE d_product (
 
 CREATE TABLE f_sales (
     sales_order_id INT PRIMARY KEY,
-    revision_number INT,
-    order_date DATE,
-    due_date DATE,
-    ship_date DATE,
-    status VARCHAR(50),
-    is_ordered_online BOOLEAN,
-    sales_order_number VARCHAR(50),
-    purchase_order_number VARCHAR(50),
-    account_number VARCHAR(50),
+    order_date DATE, 
+    due_date DATE, 
+    ship_date DATE, 
     customer_id INT,
     sales_person_id INT,
-    territory VARCHAR(50),
-    bill_to_address TEXT,
-    ship_to_address TEXT,
-    ship_method VARCHAR(50),
-    credit_card_id VARCHAR(50),
-    credit_card_approval_code VARCHAR(50),
-    currency_rate_id VARCHAR(50),
+    product_id INT, 
     sub_total DECIMAL(18, 2),
     tax_amount DECIMAL(18, 2),
     freight DECIMAL(18, 2),
     total_due DECIMAL(18, 2),
-    comment TEXT,
-    modified_date TIMESTAMP
+    modified_date TIMESTAMP,
+    FOREIGN KEY (order_date) REFERENCES d_calendario(data),
+    FOREIGN KEY (due_date) REFERENCES d_calendario(data),
+    FOREIGN KEY (ship_date) REFERENCES d_calendario(data),
+    FOREIGN KEY (product_id) REFERENCES d_product(product_id)
 );
 
 CREATE TABLE d_sales_order_details (
-    sales_order_id INT,
     sales_order_detail_id INT PRIMARY KEY,
+    sales_order_id INT, 
+    product_id INT,
     carrier_tracking_number VARCHAR(50),
     order_quantity INT,
-    product_id INT,
-    product_name VARCHAR(255),
-    special_offer_id INT,
     unit_price DECIMAL(18, 2),
     unit_price_discount DECIMAL(18, 2),
     line_total DECIMAL(18, 2),
     modified_date TIMESTAMP,
-    CONSTRAINT fk_product FOREIGN KEY (product_id)
-        REFERENCES d_product(product_id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_sales_order FOREIGN KEY (sales_order_id)
-        REFERENCES f_sales(sales_order_id)
-        ON DELETE CASCADE
+    FOREIGN KEY (sales_order_id) REFERENCES f_sales(sales_order_id),
+    FOREIGN KEY (product_id) REFERENCES d_product(product_id)
 );
 
 
