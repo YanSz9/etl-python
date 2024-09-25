@@ -87,6 +87,8 @@ conn_params = {
 product_url = "https://demodata.grapecity.com/adventureworks/api/v1/products"
 sales_url = "https://demodata.grapecity.com/adventureworks/api/v1/salesOrders"
 sales_order_details_url = "https://demodata.grapecity.com/adventureworks/api/v1/salesOrderDetails"
+customers_url = "https://demodata.grapecity.com/adventureworks/api/v1/customers"
+persons_url = 'https://demodata.grapecity.com/adventureworks/api/v1/persons'
 page_size = 500
 
 product_mapping = {
@@ -143,6 +145,29 @@ sales_order_details_mapping = {
     'ModifiedDate': 'modifiedDate'
 }
 
+customers_mapping = {
+    'CustomerID': 'customerId',
+    'PersonID': 'personId',
+    'StoreID': 'storeId',
+    'Territory': 'territory',
+    'AccountNumber': 'accountNumber',
+    'ModifiedDate': 'modifiedDate'
+}
+
+persons_mapping = {
+    'PersonID': 'personId',
+    'PersonType': 'personType',
+    'NameStyle': 'nameStyle',
+    'Title': 'title',
+    'FirstName': 'firstName',
+    'MiddleName': 'middleName',
+    'LastName': 'lastName',
+    'Suffix': 'suffix',
+    'EmailPromotion': 'emailPromotion',
+    'AdditionalContactInfo': 'additionalContactInfo',
+    'ModifiedDate': 'modifiedDate'
+}
+
 product_columns = [
     'product_id', 'product_name', 'product_category', 'product_description', 'list_price',
     'standard_cost', 'color', 'size', 'weight'
@@ -162,6 +187,16 @@ sales_order_details_columns = [
     'line_total', 'modified_date'
 ]
 
+persons_columns = [
+    'person_id', 'person_type', 'name_style', 'title', 'first_name',
+    'middle_name', 'last_name', 'suffix', 'email_promotion', 
+    'additional_contact_info', 'modified_date'
+]
+
+customers_columns = [
+    'customer_id', 'person_id', 'store_id', 'territory', 'account_number', 'modified_date'
+]
+
 try:
     for products in extract_data(product_url, page_size):
         transformed_products = transform_data(products, product_mapping)
@@ -173,9 +208,20 @@ try:
         if transformed_sales:
             load_data(transformed_sales, conn_params, 'f_sales', sales_columns, 'sales_order_id')
     
+    for customers in extract_data(customers_url, page_size):  
+        transformed_customers = transform_data(customers, customers_mapping) 
+        if transformed_customers:
+            load_data(transformed_customers, conn_params, 'd_customers', customers_columns, 'customer_id')
+    
+    for persons in extract_data(persons_url, page_size):  
+        transformed_persons = transform_data(persons, persons_mapping) 
+        if transformed_persons:
+            load_data(transformed_persons, conn_params, 'd_persons', persons_columns, 'person_id')
+
     for sales_order_details in extract_data(sales_order_details_url, page_size):
         transformed_sales_order_details = transform_data(sales_order_details, sales_order_details_mapping)
         if transformed_sales_order_details:
             load_data(transformed_sales_order_details, conn_params, 'd_sales_order_details', sales_order_details_columns, 'sales_order_detail_id')
+
 except Exception as e:
     print(f"An error occurred: {e}")
