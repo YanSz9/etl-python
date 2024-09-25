@@ -1,4 +1,4 @@
-# README - Projeto ETL com Python e PostgreSQL
+![image](https://github.com/user-attachments/assets/a6f016a4-af08-41a6-b71f-238d54584ca0)# README - Projeto ETL com Python e PostgreSQL
 
 ## Visão Geral
 
@@ -8,16 +8,18 @@ Este projeto implementa um processo ETL (Extração, Transformação e Carga) ut
 
 - **Python**: Linguagem usada para a lógica ETL.
 - **PostgreSQL**: Banco de dados relacional para armazenar os dados transformados.
-- **APIs**: O projeto extrai dados das seguintes rotas da API: 
+- **APIs**: O projeto extrai dados das seguintes rotas da API https://demodata.grapecity.com 
   - Produtos (`/products`)
   - Pedidos de Venda (`/salesOrders`)
   - Detalhes dos Pedidos de Venda (`/salesOrderDetails`)
+  - Pessoas(`/persons`)
+  - Cliente(`/customers`)
 
 ## Processo ETL
 
 1. **Extração**: Os dados são extraídos das APIs utilizando requisições `GET` paginadas.
 2. **Transformação**: Cada dado é mapeado para os campos da tabela do banco de dados, conforme os dicionários de mapeamento.
-3. **Carga**: Os dados transformados são inseridos nas tabelas do PostgreSQL (`d_product`, `f_sales`, `d_sales_order_details`) com a política de upsert (`ON CONFLICT`) para garantir que dados duplicados sejam atualizados em vez de criados novamente.
+3. **Carga**: Os dados transformados são inseridos nas tabelas do PostgreSQL (`d_product`, `f_sales`, `d_sales_order_details`, `d_persons`, `d_customers`) com a política de upsert (`ON CONFLICT`) para garantir que dados duplicados sejam atualizados em vez de criados novamente.
 
 ## Estrutura do Código
 
