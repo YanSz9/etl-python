@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/a6f016a4-af08-41a6-b71f-238d54584ca0)# README - Projeto ETL com Python e PostgreSQL
+# README - Projeto ETL com Python e PostgreSQL
 
 ## Visão Geral
 
@@ -35,7 +35,6 @@ Execute o comando abaixo para instalar as bibliotecas necessárias:
 ```bash
 pip install -r requirements.txt
 ```
-
-## Star Schema
-![image](https://github.com/user-attachments/assets/6f420e29-a6ec-440a-9d44-d674e7a8c83b)
+## StarSchema
+![image](https://github.com/user-attachments/assets/a6f016a4-af08-41a6-b71f-238d54584ca0)
 
