@@ -35,4 +35,5 @@ pip install -r requirements.txt
 ```
 
 ## Star Schema
-![image](https://github.com/user-attachments/assets/69f0f295-f4b0-4866-9b07-a6e44aabddff)
+![image](https://github.com/user-attachments/assets/6f420e29-a6ec-440a-9d44-d674e7a8c83b)
+
